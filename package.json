@@ -1,0 +1,9 @@
+{
+    "name": "aws-csk-typescript-examples",
+    "repository": "git@github.com:toddarmstrong/aws-csk-typescript-examples.git",
+    "author": "Todd Armstrong <todd@toddarmstrong.com.au>",
+    "dependencies": {
+        "@types/uuid": "^3.4.6",
+        "uuid": "^3.3.3"
+    }
+}
