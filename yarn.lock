@@ -14,6 +14,11 @@
   dependencies:
     "@types/node" "*"
 
+dotenv-export@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv-export/-/dotenv-export-2.0.0.tgz#d6b54840da5220824abc938e2c69f5f0b820f47f"
+  integrity sha512-2PZ521l0JUIR6LSOEWtB59i4BOd9KZwSmGcRK2MKlPFc+zC5zSes0OYcG6PREsdtd7e/pyXKqFbWikM7NqcL4A==
+
 uuid@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"

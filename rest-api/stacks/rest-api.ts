@@ -1,28 +1,66 @@
 import cdk = require('@aws-cdk/core')
-import lambda = require('@aws-cdk/aws-lambda')
 import dynamodb = require('@aws-cdk/aws-dynamodb')
-
-import fs = require('fs')
+import lambda = require('@aws-cdk/aws-lambda')
+import iam = require('@aws-cdk/aws-iam')
 
 export class RestApiStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props)
 
-        const moviesDynamoDBTable = new dynamodb.Table(this, 'movies-dynamodb-table', {
-            partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
-            billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-            pointInTimeRecovery: true,
-            tableName: 'cdk-rest-api-movies'
-        }) 
+        const stage = this.node.tryGetContext('stage')
 
-        const getAllMoviesFunction = new lambda.Function(this, 'get-all-movies-lambda-function', {
-            code: new lambda.InlineCode(fs.readFileSync('./lambda/handler.js', { encoding: 'utf-8' })),
-            handler: 'index.getAllMovies',
-            timeout: cdk.Duration.seconds(300),
-            runtime: lambda.Runtime.NODEJS_8_10,
-            environment: {
-                'MOVIES_TABLE_NAME': moviesDynamoDBTable.tableName
+        const moviesDynamoDBTable = new dynamodb.Table(
+            this,
+            `${stage}-movies-dynamodb-table`,
+            {
+                tableName: `${stage}-cdk-rest-api-movies`,
+                partitionKey: {
+                    name: 'id',
+                    type: dynamodb.AttributeType.STRING
+                },
+                billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+                pointInTimeRecovery: true
             }
-        })
+        )
+
+        const lambdaExecutionRole = new iam.Role(
+            this,
+            `${stage}-lambda-execution-role`,
+            {
+                roleName: `${stage}-lambda-execution`,
+                assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+                managedPolicies: [
+                    iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')
+                ],
+                inlinePolicies: {
+                    'test': new iam.PolicyDocument({
+                        statements: [
+                            new iam.PolicyStatement({
+                                effect: iam.Effect.ALLOW,
+                                resources: [moviesDynamoDBTable.tableArn],
+                                actions: ['dynamodb:*']
+                            })
+                        ]
+                    })
+                }
+            }
+        )
+
+        
+
+        const getAllMoviesFunction = new lambda.Function(
+            this,
+            `${stage}-get-all-movies-lambda-function`,
+            {
+                functionName: `${stage}-get-all-movies-lambda`,
+                role: lambdaExecutionRole,
+                code: new lambda.AssetCode('src'),
+                handler: 'handler.getAllMovies',
+                runtime: lambda.Runtime.NODEJS_10_X,
+                environment: {
+                    MOVIES_TABLE_NAME: moviesDynamoDBTable.tableName
+                }
+            }
+        )
     }
 }
