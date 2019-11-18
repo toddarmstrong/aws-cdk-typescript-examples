@@ -9,21 +9,25 @@
         "watch": "tsc -w",
         "deploy": "source ../.env && yarn run build && cdk deploy --profile $PROFILE -c stage=$STAGE -c region=$REGION",
         "bootstrap": "source ../.env && yarn run build && cdk bootstrap --profile $PROFILE -c stage=$STAGE -c region=$REGION",
-        "diff": "source ../.env && yarn run build && cdk diff --profile $PROFILE -c stage=$STAGE -c region=$REGION"
+        "diff": "source ../.env && yarn run build && cdk diff --profile $PROFILE -c stage=$STAGE -c region=$REGION",
+        "update-cdk-build": "yarn add @aws-cdk/core @aws-cdk/aws-dynamodb @aws-cdk/aws-iam @aws-cdk/aws-lambda @aws-cdk/aws-apigateway",
+        "update-cdk-dev": "yarn add --dev aws-cdk @aws-cdk/assert",
+        "update-cdk": "yarn run update-cdk-dev && yarn run update-cdk-build"
     },
     "devDependencies": {
-        "@aws-cdk/assert": "^1.16.2",
+        "@aws-cdk/assert": "^1.16.3",
         "@types/node": "^12.12.7",
-        "aws-cdk": "^1.16.2",
+        "aws-cdk": "^1.16.3",
         "source-map-support": "^0.5.16",
         "ts-node": "^8.1.0",
         "typescript": "^3.7.2"
     },
     "dependencies": {
-        "@aws-cdk/aws-dynamodb": "^1.16.2",
-        "@aws-cdk/aws-iam": "^1.16.2",
-        "@aws-cdk/aws-lambda": "^1.16.2",
-        "@aws-cdk/core": "^1.16.2",
+        "@aws-cdk/aws-apigateway": "^1.16.3",
+        "@aws-cdk/aws-dynamodb": "^1.16.3",
+        "@aws-cdk/aws-iam": "^1.16.3",
+        "@aws-cdk/aws-lambda": "^1.16.3",
+        "@aws-cdk/core": "^1.16.3",
         "aws-sdk": "^2.570.0"
     }
 }

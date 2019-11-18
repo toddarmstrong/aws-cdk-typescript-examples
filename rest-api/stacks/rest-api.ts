@@ -2,6 +2,7 @@ import cdk = require('@aws-cdk/core')
 import dynamodb = require('@aws-cdk/aws-dynamodb')
 import lambda = require('@aws-cdk/aws-lambda')
 import iam = require('@aws-cdk/aws-iam')
+import apigateway = require('@aws-cdk/aws-apigateway')
 
 export class RestApiStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -46,8 +47,6 @@ export class RestApiStack extends cdk.Stack {
             }
         )
 
-        
-
         const getAllMoviesFunction = new lambda.Function(
             this,
             `${stage}-get-all-movies-lambda-function`,
@@ -62,5 +61,17 @@ export class RestApiStack extends cdk.Stack {
                 }
             }
         )
+
+        const api = new apigateway.RestApi(
+            this,
+            `${stage}-cdk-rest-api`,
+            {
+                restApiName: `${stage}-cdk-rest-api`
+            }
+        )
+
+        const getAllMoviesApiResource = api.root.addResource('getAllMovies')
+        const getAllMoviesIntegration = new apigateway.LambdaIntegration(getAllMoviesFunction)
+        getAllMoviesApiResource.addMethod('GET', getAllMoviesIntegration)
     }
 }
