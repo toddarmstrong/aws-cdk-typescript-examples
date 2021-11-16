@@ -28,6 +28,6 @@
         "@aws-cdk/aws-iam": "^1.16.3",
         "@aws-cdk/aws-lambda": "^1.16.3",
         "@aws-cdk/core": "^1.16.3",
-        "aws-sdk": "^2.570.0"
+        "aws-sdk": "^2.814.0"
     }
 }
